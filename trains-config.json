@@ -1,0 +1,15 @@
+{
+    "station1": "FRAEG",
+    "station2": ["FRSNE", "FRBZV", "FRBZM", "FRSBG"],
+    "stations": {
+        "FRSNE": "Saverne", 
+        "FRBZV": "Lutzelbourg",
+        "FRBZM": "Reding",
+        "FRSBG": "Sarrebourg",
+        "FRAEG": "Strasbourg"
+    },
+    "line": {
+        "start": "Sarrebourg",
+        "end": "Strasbourg"
+    } 
+}
