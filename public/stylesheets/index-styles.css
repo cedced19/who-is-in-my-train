@@ -56,6 +56,20 @@ header {
     cursor: pointer;
     padding: 5px;
 }
+.left-train {
+    float: right;
+    background-color: #d63031;
+    cursor: pointer;
+    padding: 5px;
+}
+.planed {
+    color: #2f3640;
+    display: inline-block
+}
+.planed span {
+    text-decoration: underline;
+    margin-left: 5px;
+}
 @media (max-width: 350px) {
     .train-departure .name, .train-arrival .name  {
         float: left;

@@ -41,6 +41,9 @@ schedule.scheduleJob('0 0 */12 * * *', function () {
 });
 
 
+// Init database for user's trains
+app.planedTrains = require('json-store-list')(path.resolve(__dirname, '../planed-trains.json'));
+
 /**
  * Get line inforamtions
  */

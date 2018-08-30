@@ -24,12 +24,15 @@ router.post('/api/take_train', auth(), function (req, res) {
     var obj = {
         train_date: req.body.train_date,
         train_id: req.body.train_id,
+        train_type: req.body.train_type,
         user_name: req.user.displayName,
         user_id: req.user.id,
         uuid: randomstring.generate(7)
     };
-    console.log(obj);
-    res.json(obj);
+    req.app.planedTrains.post(obj, function (err) {
+        if (err) return next (err);
+        res.json(obj);
+    });
 });
 
 module.exports = router;
