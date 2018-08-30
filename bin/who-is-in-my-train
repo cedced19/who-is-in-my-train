@@ -58,7 +58,7 @@ models.waterline.initialize(models.config, function (err, models) {
  */
 var getTrains = require('../lib/get-trains')
 var fs = require('fs');
-var trainsConfig = require('../trains-config.json');
+var trainsConfig = require('../public/trains-config.json');
 
 function getLine() {
   getTrains(trainsConfig.station1, trainsConfig.station2, new Date(), 24 * 60 * 60 * 1000, function (err, data) {

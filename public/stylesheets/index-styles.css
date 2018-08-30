@@ -1,0 +1,31 @@
+html, body {
+    font: 15px arial, sans-serif;
+    background: #2f3640;
+    color: #fff
+}
+.train-departure, .train-arrival {
+    background-color: #d9edf7;
+    margin: 0 0 10px;
+    padding: 15px;
+    overflow: hidden;
+}
+.train-departure .name, .train-arrival .name  {
+    display:  inline-block;
+    color: #273c75;
+    float: right;
+    font-weight: 300;
+    font-size: 20px;
+}
+.train-departure .departure, .train-arrival .arrival  {
+    display:  inline-block; 
+    color: #8c7ae6; 
+    font-weight: 300;
+    font-size: 20px;
+}
+.train-departure .arrival, .train-arrival .departure {
+    color: #2f3640;
+}
+::selection {
+    background: #2f3640;
+    color: #fff
+}

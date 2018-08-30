@@ -1,0 +1,41 @@
+<h1>{{config.line.start}} - {{config.line.end}}</h1>
+<h2>De {{config.line.start}} à {{config.line.end}}</h2>
+<div ng-repeat="train in trains.a" class="train-departure">
+    <div>
+        <div class="departure">
+            <b>{{train.departure | date:'HH:mm EEEE d MMMM'}}</b>
+        </div>
+        <div class="name">{{train.type}} {{train.id}}</div>
+    </div>
+    <div class="arrival">
+        <div ng-if="objLength(train.arrival) > 1">Arrivés:
+            <ul>
+                <li ng-repeat="(name, hour) in train.arrival">
+                    <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}</li>
+            </ul>
+        </div>
+        <div ng-if="objLength(train.arrival) == 1" ng-repeat="(name, hour) in train.arrival">
+            Arrivé: <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}
+        </div>
+    </div>
+</div>
+<h2>De {{config.line.end}} à {{config.line.start}}</h2>
+<div ng-repeat="train in trains.b" class="train-arrival">
+    <div>
+        <div class="arrival">Arrivé à {{config.line.start}}:
+            <b>{{train.arrival | date:'HH:mm EEEE d MMMM'}}</b>
+        </div>
+        <div class="name">{{train.type}} {{train.id}}</div>
+    </div>
+    <div class="departure">
+        <div ng-if="objLength(train.departure) > 1">Départs:
+            <ul>
+                <li ng-repeat="(name, hour) in train.departure">
+                    <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}</li>
+            </ul>
+        </div>
+        <div ng-if="objLength(train.departure) == 1" ng-repeat="(name, hour) in train.departure">Départ:
+            <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}
+        </div>
+    </div>
+</div>
