@@ -38,7 +38,7 @@ models.waterline.initialize(models.config, function (err, models) {
   app.models = models.collections;
   app.connections = models.connections;
 
-  schedule.scheduleJob('0 0 */3 * * *', function () {
+  schedule.scheduleJob('0 0 */12 * * *', function () {
     getLine();
   });
 
@@ -61,12 +61,12 @@ var fs = require('fs');
 var trainsConfig = require('../public/trains-config.json');
 
 function getLine() {
-  getTrains(trainsConfig.station1, trainsConfig.station2, new Date(), 24 * 60 * 60 * 1000, function (err, data) {
+  getTrains(trainsConfig.station1, trainsConfig.station2, new Date(), 5 * 24 * 60 * 60 * 1000, function (err, data) {
     if (!err) {
       fs.writeFile(path.resolve(__dirname, '../public/trains-1-to-2.json'), JSON.stringify(data), 'utf8', function () {});
     }
   });
-  getTrains(trainsConfig.station2, trainsConfig.station1, new Date(), 24 * 60 * 60 * 1000, function (err, data) {
+  getTrains(trainsConfig.station2, trainsConfig.station1, new Date(), 5 * 24 * 60 * 60 * 1000, function (err, data) {
     if (!err) {
       fs.writeFile(path.resolve(__dirname, '../public/trains-2-to-1.json'), JSON.stringify(data), 'utf8', function () {});
     }

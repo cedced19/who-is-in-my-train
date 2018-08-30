@@ -6,6 +6,9 @@ html, body {
 .selector-hour .selector-group {
     display: inline-block;
 }
+.selector-group {
+    margin-top: 10px;
+}
 select {
     outline: 0;
     height: 30px;

@@ -1,6 +1,14 @@
 module.exports = ['$http', '$scope', '$rootScope', function ($http, $scope, $rootScope) {
     $scope.trains = {};
-    $scope.hours = [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
+    $scope.hours = [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23];
+    
+    $scope.dates = [];
+    for (var k=0; k<5; k++) {
+        var now = new Date();
+        now.setDate(now.getDate() + k);
+        $scope.dates.push(now);
+    }
+
     $http.get('/trains-config.json').success(function(data) {
         $scope.config = data;
     }).error($rootScope.$error);
@@ -28,7 +36,27 @@ module.exports = ['$http', '$scope', '$rootScope', function ($http, $scope, $roo
             } else {
                 date = (new Date (train.arrival)).getHours();
             }
-            if (a < date && b > date) {
+           
+            if (a <= date && date < b) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return true;
+        }
+    }
+
+    $scope.verifyDate = function (train, departure) {
+        if ($scope.date != '' && typeof $scope.date != 'undefined') {
+            var date = 0;
+            if (departure) {
+                date = (new Date (train.departure)).getDate();
+                console.log((new Date (train.departure)).getDate())
+            } else {
+                date = (new Date (train.arrival)).getDate();
+            }
+            if ((new Date($scope.date)).getDate() == date) {
                 return true;
             } else {
                 return false;

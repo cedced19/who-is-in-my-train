@@ -13,11 +13,17 @@
         </select>
     </div>
 </div>
+<div class="selector-group">
+        <label for="date-input">Le</label>
+        <select id="date-input" ng-model="date">
+            <option ng-repeat="n in dates" ng-value="n">{{n | date:'EEEE d MMMM'}}</option>
+        </select>
+    </div>
 <div class="warning" ng-show="hoursValid(firstHour, secondHour)">
     L'horraire sélectionnée est incorrect. 
 </div>
 <h2>De {{config.line.start}} à {{config.line.end}}</h2>
-<div ng-repeat="train in trains.a" class="train-departure" ng-show="verifyHours(train, true)">
+<div ng-repeat="train in trains.a | orderBy:'departure':false" class="train-departure" ng-show="verifyHours(train, true) && verifyDate(train, true)">
     <div>
         <div class="departure">
             <b>{{train.departure | date:'HH:mm EEEE d MMMM'}}</b>
@@ -38,7 +44,7 @@
     </div>
 </div>
 <h2>De {{config.line.end}} à {{config.line.start}}</h2>
-<div ng-repeat="train in trains.b" class="train-arrival" ng-show="verifyHours(train, false)">
+<div ng-repeat="train in trains.b | orderBy:'arrival':false" class="train-arrival" ng-show="verifyHours(train, false) && verifyDate(train, false)">
     <div>
         <div class="arrival">Arrivé à {{config.line.start}}:
             <b>{{train.arrival | date:'HH:mm EEEE d MMMM'}}</b>
