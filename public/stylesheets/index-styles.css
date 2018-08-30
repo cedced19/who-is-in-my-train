@@ -3,6 +3,16 @@ html, body {
     background: #2f3640;
     color: #fff
 }
+.selector-hour .selector-group {
+    display: inline-block;
+}
+select {
+    outline: 0;
+    height: 30px;
+    background: #8c7ae6;
+    border: #8c7ae6;
+    padding: 5px 3px 5px 10px;
+}
 .train-departure, .train-arrival {
     background-color: #d9edf7;
     margin: 0 0 10px;

@@ -1,6 +1,23 @@
 <h1>{{config.line.start}} - {{config.line.end}}</h1>
+<div class="selector-hour">
+    <div class="selector-group">
+        <label for="first-hour-input">De</label>
+        <select id="first-hour-input" ng-model="firstHour">
+            <option ng-repeat="n in hours" value="{{n}}">{{n}}h</option>
+        </select>
+    </div>
+    <div class="selector-group">
+        <label for="second-hour-input">à</label>
+        <select id="second-hour-input" ng-model="secondHour">
+            <option ng-repeat="n in hours" value="{{n}}">{{n}}h</option>
+        </select>
+    </div>
+</div>
+<div class="warning" ng-show="hoursValid(firstHour, secondHour)">
+    L'horraire sélectionnée est incorrect. 
+</div>
 <h2>De {{config.line.start}} à {{config.line.end}}</h2>
-<div ng-repeat="train in trains.a" class="train-departure">
+<div ng-repeat="train in trains.a" class="train-departure" ng-show="verifyHours(train, true)">
     <div>
         <div class="departure">
             <b>{{train.departure | date:'HH:mm EEEE d MMMM'}}</b>
@@ -15,12 +32,13 @@
             </ul>
         </div>
         <div ng-if="objLength(train.arrival) == 1" ng-repeat="(name, hour) in train.arrival">
-            Arrivé: <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}
+            Arrivé:
+            <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}
         </div>
     </div>
 </div>
 <h2>De {{config.line.end}} à {{config.line.start}}</h2>
-<div ng-repeat="train in trains.b" class="train-arrival">
+<div ng-repeat="train in trains.b" class="train-arrival" ng-show="verifyHours(train, false)">
     <div>
         <div class="arrival">Arrivé à {{config.line.start}}:
             <b>{{train.arrival | date:'HH:mm EEEE d MMMM'}}</b>
@@ -34,7 +52,8 @@
                     <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}</li>
             </ul>
         </div>
-        <div ng-if="objLength(train.departure) == 1" ng-repeat="(name, hour) in train.departure">Départ:
+        <div ng-if="objLength(train.departure) == 1" ng-repeat="(name, hour) in train.departure">
+            Départ:
             <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}
         </div>
     </div>
