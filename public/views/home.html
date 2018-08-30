@@ -14,13 +14,13 @@
     </div>
 </div>
 <div class="selector-group">
-        <label for="date-input">Le</label>
-        <select id="date-input" ng-model="date">
-            <option ng-repeat="n in dates" ng-value="n">{{n | date:'EEEE d MMMM'}}</option>
-        </select>
-    </div>
+    <label for="date-input">Le</label>
+    <select id="date-input" ng-model="date">
+        <option ng-repeat="n in dates" ng-value="n">{{n | date:'EEEE d MMMM'}}</option>
+    </select>
+</div>
 <div class="warning" ng-show="hoursValid(firstHour, secondHour)">
-    L'horraire sélectionnée est incorrect. 
+    L'horraire sélectionnée est incorrect.
 </div>
 <h2>De {{config.line.start}} à {{config.line.end}}</h2>
 <div ng-repeat="train in trains.a | orderBy:'departure':false" class="train-departure" ng-show="verifyHours(train, true) && verifyDate(train, true)">

@@ -8,13 +8,12 @@ var compress = require('compression');
 var minifyTemplate = require('express-beautify').minify;
 
 var passport = require('passport');
-var hash = require('password-hash-and-salt');
 var flash = require('connect-flash');
 var helmet = require('helmet');
 var session = require('express-session');
 
 var MongoDBStore = require('connect-mongodb-session')(session);
-var LocalStrategy = require('passport-local').Strategy;
+var FacebookStrategy = require('passport-facebook').Strategy;
 
 var app = express();
 
@@ -34,7 +33,7 @@ if (app.get('env') === 'development') {
     app.use(compress());
     app.use(minifyTemplate());
 }
-  
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(helmet());
@@ -60,48 +59,31 @@ app.use(passport.session());
 app.use('/', require('./routes/index'));
 
 // authentication
-passport.serializeUser(function (model, done) {
-    done(null, model.name);
+passport.serializeUser(function (user, cb) {
+    cb(null, user);
 });
 
-passport.deserializeUser(function (email, done) {
-    app.models.users.findOne({ email: email }, function (err, model) {
-        if (model != null) {
-            delete model.password;
-            return done(err, model);
-        }
-        done(err, false);
-    });
+passport.deserializeUser(function (obj, cb) {
+    cb(null, obj);
 });
 
-// define local strategy
-passport.use('local', new LocalStrategy({
-    usernameField: 'name',
-    passwordField: 'password'
-}, function (name, password, done) {
-    // search in database
-    app.models.users.findOne({ name: name }, function (err, model) {
-        if (err) { return done(err); }
-        if (!model) {
-            return done(null, false, { message: 'invalid-name' });
-        }
-        // test password
-        hash(password).verifyAgainst(model.password, function (err, verified) {
-            if (err || !verified) {
-                return done(null, false, {
-                    message: 'invalid-password'
-                });
-            } else {
-                var returnmodel = {
-                    name: model.name
-                };
-                return done(null, returnmodel, {
-                    message: 'Connexion réussi.'
-                });
-            }
-        });
-    });
-}));
+passport.use(new FacebookStrategy({
+    clientID: process.env.FACEBOOK_CLIENT_ID,
+    clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+    callbackURL: process.env.ROOT_URL + '/auth/facebook/callback'
+},
+    function (accessToken, refreshToken, profile, done) {
+        done(null, profile);
+    }
+));
+
+app.get('/auth/facebook', passport.authenticate('facebook'));
+
+app.get('/auth/facebook/callback',
+    passport.authenticate('facebook', {
+        successRedirect: '/',
+        failureRedirect: '/'
+    }));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -131,7 +113,7 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
         message: err.message,
-        status: err.status || 500, 
+        status: err.status || 500,
         error: {}
     });
 });

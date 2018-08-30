@@ -13,6 +13,7 @@
         <link rel="manifest" href="/manifest.json">
     </head>
     <body ng-app="WhoIsInMyTrain">
+        <header><% if (user) { %><%= user.displayName %><% } else { %><a href="/auth/facebook" class="facebook">S'identifier avec Facebook</a><% } %></header>
         <div ng-view></div>
         <script type="text/javascript" src="/javascripts/index/build.js"></script>
     </body>
