@@ -10,7 +10,9 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 var app = require('../app');
 var debug = require('debug')('who-is-in-my-train:server');
 var http = require('http');
-
+var getTrains = require('../lib/get-trains')
+var fs = require('fs');
+var trainsConfig = require('../public/trains-config.json');
 var schedule = require('node-schedule');
 
 /**
@@ -42,10 +44,6 @@ schedule.scheduleJob('0 0 */12 * * *', function () {
 /**
  * Get line inforamtions
  */
-var getTrains = require('../lib/get-trains')
-var fs = require('fs');
-var trainsConfig = require('../public/trains-config.json');
-
 function getLine() {
   getTrains(trainsConfig.station1, trainsConfig.station2, new Date(), 5 * 24 * 60 * 60 * 1000, function (err, data) {
     if (!err) {

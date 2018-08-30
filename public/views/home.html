@@ -42,6 +42,7 @@
             <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}
         </div>
     </div>
+    <a ng-click="takeTrain(train, true)" class="take-train">Prendre ce train</a>
 </div>
 <h2>De {{config.line.end}} à {{config.line.start}}</h2>
 <div ng-repeat="train in trains.b | orderBy:'arrival':false" class="train-arrival" ng-show="verifyHours(train, false) && verifyDate(train, false)">
@@ -63,4 +64,5 @@
             <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}
         </div>
     </div>
+    <a ng-click="takeTrain(train, false)" class="take-train">Prendre ce train</a>
 </div>

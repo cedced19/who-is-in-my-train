@@ -23,7 +23,6 @@ select {
     overflow: hidden;
 }
 .train-departure .name, .train-arrival .name  {
-    display:  inline-block;
     color: #273c75;
     float: right;
     font-weight: 300;
@@ -45,9 +44,20 @@ select {
 header {
     float: right
 }
-header .facebook {
+.facebook {
     background: #4267b2;
     color: inherit;
     text-decoration: none;
     padding: 5px;
+}
+.take-train {
+    float: right;
+    background-color: #00b894;
+    cursor: pointer;
+    padding: 5px;
+}
+@media (max-width: 350px) {
+    .train-departure .name, .train-arrival .name  {
+        float: left;
+    }
 }
