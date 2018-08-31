@@ -72,8 +72,8 @@ module.exports = ['$http', '$scope', '$window', 'notie', function ($http, $scope
 
     $scope.verifyHours = function (train, departure) {
         var date = new Date((departure) ? train.departure : train.arrival);
-        var now = new Date()
-        if ((date.getHours() < now.getHours() && now.getDate() == date.getDate()) || date.getDate() < now.getDate()) {
+        var now = new Date();
+        if (date.getTime() < now.getTime()) {
             return false;
         }
         var a = Number($scope.firstHour);

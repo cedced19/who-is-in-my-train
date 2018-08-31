@@ -74,7 +74,7 @@ function removeOldTrains () {
   app.plannedTrains.getAll().forEach(element => {
     let date = new Date(element.train_date);
     let now = new Date();
-    if ((date.getHours() < now.getHours() && now.getDate() == date.getDate()) || date.getDate() < now.getDate()) {
+    if (date.getTime() < now.getTime()) {
       toDelete.push(element.uuid);
     }
   });

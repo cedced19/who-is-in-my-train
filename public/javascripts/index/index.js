@@ -1,19 +1,9 @@
 require('angular'); /*global angular*/
-require('angular-route');
 require('ng-notie');
 require('./angular-locale_fr-fr.js');
 
-
-var app = angular.module('WhoIsInMyTrain', ['ngNotie', 'ngRoute']);
-app.config(['$routeProvider', function($routeProvider) {
-        // Route configuration
-        $routeProvider
-        .when('/', {
-            templateUrl: '/views/home.html',
-            controller: 'HomeCtrl'
-        })
-        .otherwise({
-            redirectTo: '/'
-        });
-}]);
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' });
+}
+var app = angular.module('WhoIsInMyTrain', ['ngNotie']);
 app.controller('HomeCtrl', require('./controllers/home.js'));

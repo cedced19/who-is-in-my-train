@@ -1,20 +1,110 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-        <title>Who is in my train</title>
-        <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
-        <meta name="viewport" content="width=device-width">
-        <link rel="stylesheet" href="/stylesheets/index-styles.min.css" />
-        <meta name="theme-color" content="#2d3436">
-        <meta name="msapplication-navbutton-color" content="#2d3436">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-        <link rel="manifest" href="/manifest.json">
-    </head>
-    <body ng-app="WhoIsInMyTrain">
-        <header><% if (user) { %><%= user.displayName %><% } else { %><a href="/auth/facebook" class="facebook">S'identifier avec Facebook</a><% } %></header>
-        <div ng-view></div>
-        <script type="text/javascript" src="/javascripts/index/build.js"></script>
-    </body>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Who is in my train</title>
+    <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="/stylesheets/index-styles.min.css" />
+    <meta name="theme-color" content="#2d3436">
+    <meta name="msapplication-navbutton-color" content="#2d3436">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="/manifest.json">
+</head>
+
+<body ng-app="WhoIsInMyTrain" ng-controller="HomeCtrl">
+    <header><% if (user) { %><%= user.displayName %><% } else { %><a href="/auth/facebook" class="facebook">S'identifier avec Facebook</a><% } %></header>
+    <h1>{{config.line.start}} - {{config.line.end}}</h1>
+    <div class="selector-hour">
+        <div class="selector-group">
+            <label for="first-hour-input">De</label>
+            <select id="first-hour-input" ng-model="firstHour">
+                <option ng-repeat="n in hours" value="{{n}}">{{n}}h</option>
+            </select>
+        </div>
+        <div class="selector-group">
+            <label for="second-hour-input">à</label>
+            <select id="second-hour-input" ng-model="secondHour">
+                <option ng-repeat="n in hours" value="{{n}}">{{n}}h</option>
+            </select>
+        </div>
+    </div>
+    <div class="selector-group">
+        <label for="date-input">Le</label>
+        <select id="date-input" ng-model="date">
+            <option ng-repeat="n in dates" ng-value="n">{{n | date:'EEEE d MMMM'}}</option>
+        </select>
+    </div>
+    <div class="warning" ng-show="hoursValid(firstHour, secondHour)">
+        L'horraire sélectionnée est incorrect.
+    </div>
+    <div ng-show="departureMode">
+        <h2>De
+            <span class="station">{{config.line.start}}</span> à
+            <span class="station">{{config.line.end}}</span>
+            <span class="change-way" ng-click="departureMode = false">&#8652;</span>
+        </h2>
+        <div ng-repeat="train in trains.a | orderBy:'departure':false" class="train-departure" ng-show="verifyHours(train, true) && verifyDate(train, true)">
+            <div>
+                <div class="departure">
+                    <b>{{train.departure | date:'HH:mm EEEE d MMMM'}}</b>
+                </div>
+                <div class="name">{{train.type}} {{train.id}}</div>
+            </div>
+            <div class="arrival">
+                <div ng-if="objLength(train.arrival) > 1">Arrivés:
+                    <ul>
+                        <li ng-repeat="(name, hour) in train.arrival">
+                            <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}</li>
+                    </ul>
+                </div>
+                <div ng-if="objLength(train.arrival) == 1" ng-repeat="(name, hour) in train.arrival">
+                    Arrivé:
+                    <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}
+                </div>
+            </div>
+            <p class="planned" ng-if="train.planned">Personnes prenant ce train:
+                <span ng-repeat="u in train.planned">{{u.user_name}}</span>
+            </p>
+            <a ng-click="takeTrain(train, true)" class="take-train" ng-if="!isTakingTrain(train)">Prendre ce train</a>
+            <a ng-click="leftTrain(train, true)" class="left-train" ng-if="isTakingTrain(train)">Ne plus prendre ce train</a>
+        </div>
+    </div>
+    <div ng-show="!departureMode">
+        <h2>De
+            <span class="station">{{config.line.end}}</span> à
+            <span class="station">{{config.line.start}}</span>
+            <span class="change-way" ng-click="departureMode = true">&#8652;</span>
+        </h2>
+        <div ng-repeat="train in trains.b | orderBy:'arrival':false" class="train-arrival" ng-show="verifyHours(train, false) && verifyDate(train, false)">
+            <div>
+                <div class="arrival">Arrivé à {{config.line.start}}:
+                    <b>{{train.arrival | date:'HH:mm EEEE d MMMM'}}</b>
+                </div>
+                <div class="name">{{train.type}} {{train.id}}</div>
+            </div>
+            <div class="departure">
+                <div ng-if="objLength(train.departure) > 1">Départs:
+                    <ul>
+                        <li ng-repeat="(name, hour) in train.departure">
+                            <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}</li>
+                    </ul>
+                </div>
+                <div ng-if="objLength(train.departure) == 1" ng-repeat="(name, hour) in train.departure">
+                    Départ:
+                    <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}
+                </div>
+            </div>
+            <p class="planned" ng-if="train.planned">Personnes prenant ce train:
+                <span ng-repeat="u in train.planned">{{u.user_name}}</span>
+            </p>
+            <a ng-click="takeTrain(train, false)" class="take-train" ng-if="!isTakingTrain(train)">Prendre ce train</a>
+            <a ng-click="leftTrain(train, true)" class="left-train" ng-if="isTakingTrain(train)">Ne plus prendre ce train</a>
+        </div>
+    </div>
+    <script type="text/javascript" src="/javascripts/index/build.js"></script>
+</body>
+
 </html>
