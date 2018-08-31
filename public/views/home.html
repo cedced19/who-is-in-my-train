@@ -42,9 +42,9 @@
             <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}
         </div>
     </div>
+    <p class="planned" ng-if="train.planned">Personnes prenant ce train: <span ng-repeat="u in train.planned">{{u.user_name}}</span></p>
     <a ng-click="takeTrain(train, true)" class="take-train" ng-if="!isTakingTrain(train)">Prendre ce train</a>
     <a ng-click="leftTrain(train, true)" class="left-train" ng-if="isTakingTrain(train)">Ne plus prendre ce train</a>
-    <p class="planned" ng-if="train.planned">Personnes prenant ce train: <span ng-repeat="u in train.planned">{{u.user_name}}</span></p>
 </div>
 <h2>De {{config.line.end}} à {{config.line.start}}</h2>
 <div ng-repeat="train in trains.b | orderBy:'arrival':false" class="train-arrival" ng-show="verifyHours(train, false) && verifyDate(train, false)">
@@ -66,5 +66,7 @@
             <b>{{hour | date:'HH:mm'}}</b> {{config.stations[name]}}
         </div>
     </div>
-    <a ng-click="takeTrain(train, false)" class="take-train">Prendre ce train</a>
+    <p class="planned" ng-if="train.planned">Personnes prenant ce train: <span ng-repeat="u in train.planned">{{u.user_name}}</span></p>
+    <a ng-click="takeTrain(train, false)" class="take-train" ng-if="!isTakingTrain(train)">Prendre ce train</a>
+    <a ng-click="leftTrain(train, true)" class="left-train" ng-if="isTakingTrain(train)">Ne plus prendre ce train</a>
 </div>

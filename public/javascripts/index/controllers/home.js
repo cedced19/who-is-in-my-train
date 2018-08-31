@@ -53,8 +53,8 @@ module.exports = ['$http', '$scope', '$window', 'notie', function ($http, $scope
                             train.planned = [el];
                         }
                         if (el.user_id == $scope.user.id) {
-                            train.isTakingTrain = el;
-                        } 
+                            train.takingTrain = el;
+                        }
                     }
                 });
             });
@@ -108,7 +108,10 @@ module.exports = ['$http', '$scope', '$window', 'notie', function ($http, $scope
     }
 
     $scope.isTakingTrain = function (train) {
-        if (typeof train.takingTrain == 'undefined' && typeof train.planned == 'undefined') {
+        if (typeof train.takingTrain == 'undefined') {
+            return false;
+        }
+        if (typeof train.planned == 'undefined') {
             return false;
         }
         if (typeof train.planned != 'undefined') {
@@ -144,6 +147,28 @@ module.exports = ['$http', '$scope', '$window', 'notie', function ($http, $scope
                     train.takingTrain = data;
                     notie.alert(1, 'Train enregistré', 3);
                 }).error(onError);
+            } else {
+                $window.open('/login', '_blank');
+                notie.alert(3, 'Vous devez vous connecter', 3);
+            }
+        });
+    }
+
+    $scope.leftTrain = function (train, departure) {
+        $scope.authenticate(function () {
+            if ($scope.user) {
+                if (train.takingTrain) {
+                    $http.delete('/api/planned-trains/' + train.takingTrain.uuid).success(function () {
+                        var i = train.planned.findIndex(function (k) {
+                            return train.takingTrain.uuid == k.uuid;
+                        });
+                        if (i > -1) {
+                            train.planned.splice(i, 1);
+                        }
+                        train.takingTrain = false;
+                        notie.alert(1, 'Train supprimé', 3);
+                    }).error(onError);
+                }
             } else {
                 $window.open('/login', '_blank');
                 notie.alert(3, 'Vous devez vous connecter', 3);

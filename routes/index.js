@@ -40,7 +40,18 @@ router.post('/api/planned-trains', auth(), function (req, res) {
 });
 
 router.delete('/api/planned-trains/:uuid', function (req, res) {
-    
+    req.app.plannedTrains.get('uuid', req.params.uuid, function (err, obj) {
+        if (err) return next (err);
+        if (req.user.id == obj.user_id) {
+            req.app.plannedTrains.delete('uuid', req.params.uuid, function (err) {
+                if (err) return next (err);
+                res.json({status: 'ok'});
+            });
+        } else {
+            err = new Error('The user does not correspond.');
+            next (err);
+        }
+    });
 });
 
 module.exports = router;

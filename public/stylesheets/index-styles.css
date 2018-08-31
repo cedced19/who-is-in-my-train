@@ -69,6 +69,7 @@ header {
 .planned span {
     text-decoration: underline;
     margin-left: 5px;
+    margin-right: 5px;
 }
 @media (max-width: 350px) {
     .train-departure .name, .train-arrival .name  {

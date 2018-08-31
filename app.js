@@ -38,8 +38,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(helmet());
 
-
-
 app.use(flash());
 app.use(session({
     secret: 'website of the Who is in my train',
