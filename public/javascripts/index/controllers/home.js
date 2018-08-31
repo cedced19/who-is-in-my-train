@@ -2,7 +2,7 @@ module.exports = ['$http', '$scope', '$window', 'notie', function ($http, $scope
     $scope.trains = {};
     $scope.hours = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23];
 
-    function onError () { // Send message error
+    function onError() { // Send message error
         notie.alert(3, 'Une erreur est survenue.', 3);
     }
 
@@ -37,7 +37,29 @@ module.exports = ['$http', '$scope', '$window', 'notie', function ($http, $scope
             if (cb) cb();
         });
     }
-    $scope.authenticate();
+
+    $scope.authenticate(function () {
+        $http.get('/api/planned-trains').success(function (data) {
+            $scope.$evalAsync(function () {
+                data.forEach(function (el) {
+                    var i = $scope.trains[(el.train_type) ? 'a' : 'b'].findIndex(function (k) {
+                        return k.id == el.train_id && el.train_date == k[(el.train_type) ? 'departure' : 'arrival'];
+                    });
+                    if (typeof i != 'undefined') {
+                        var train = $scope.trains[(el.train_type) ? 'a' : 'b'][i];
+                        if (Array.isArray(train.planned)) {
+                            train.planned.push(el);
+                        } else {
+                            train.planned = [el];
+                        }
+                        if (el.user_id == $scope.user.id) {
+                            train.isTakingTrain = el;
+                        } 
+                    }
+                });
+            });
+        }).error(onError);
+    });
 
     $scope.objLength = function (obj) {
         return Object.keys(obj).length;
@@ -86,13 +108,15 @@ module.exports = ['$http', '$scope', '$window', 'notie', function ($http, $scope
     }
 
     $scope.isTakingTrain = function (train) {
-        if (typeof train.takingTrain == 'undefined' && typeof train.planed == 'undefined') {
+        if (typeof train.takingTrain == 'undefined' && typeof train.planned == 'undefined') {
             return false;
         }
-        if (train.planed.find(function (el) {
-            return el.user_name == $scope.user.name
-        })) {
-            return true
+        if (typeof train.planned != 'undefined') {
+            if (train.planned.find(function (el) {
+                return el.user_name == $scope.user.name
+            })) {
+                return true
+            }
         }
         return false
     }
@@ -100,23 +124,22 @@ module.exports = ['$http', '$scope', '$window', 'notie', function ($http, $scope
     $scope.takeTrain = function (train, departure) {
         $scope.authenticate(function () {
             if ($scope.user) {
-                if (typeof train.planed != 'undefined') {
-                    if (train.planed.find(function (el) {
-                        console.log(el.user_name, $scope.user.name)
+                if (typeof train.planned != 'undefined') {
+                    if (train.planned.find(function (el) {
                         return el.user_name == $scope.user.name;
                     })) {
                         return notie.alert(3, 'Vous prenez déjà ce train', 3);
                     }
                 }
-                $http.post('/api/take_train', {
+                $http.post('/api/planned-trains', {
                     train_date: (departure) ? train.departure : train.arrival,
                     train_id: train.id,
                     train_type: departure
                 }).success(function (data) {
-                    if (Array.isArray(train.planed)) {
-                        train.planed.push(data);
+                    if (Array.isArray(train.planned)) {
+                        train.planned.push(data);
                     } else {
-                        train.planed = [data];
+                        train.planned = [data];
                     }
                     train.takingTrain = data;
                     notie.alert(1, 'Train enregistré', 3);

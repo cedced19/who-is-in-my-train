@@ -44,7 +44,7 @@
     </div>
     <a ng-click="takeTrain(train, true)" class="take-train" ng-if="!isTakingTrain(train)">Prendre ce train</a>
     <a ng-click="leftTrain(train, true)" class="left-train" ng-if="isTakingTrain(train)">Ne plus prendre ce train</a>
-    <p class="planed" ng-if="train.planed.length > 0">Personnes prenant ce train: <span ng-repeat="u in train.planed">{{u.user_name}}</span></p>
+    <p class="planned" ng-if="train.planned">Personnes prenant ce train: <span ng-repeat="u in train.planned">{{u.user_name}}</span></p>
 </div>
 <h2>De {{config.line.end}} à {{config.line.start}}</h2>
 <div ng-repeat="train in trains.b | orderBy:'arrival':false" class="train-arrival" ng-show="verifyHours(train, false) && verifyDate(train, false)">

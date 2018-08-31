@@ -20,7 +20,11 @@ router.get('/api/profile', function (req, res) {
     }
 });
 
-router.post('/api/take_train', auth(), function (req, res) {
+router.get('/api/planned-trains', function (req, res) {
+    res.json(req.app.plannedTrains.getAll());
+});
+
+router.post('/api/planned-trains', auth(), function (req, res) {
     var obj = {
         train_date: req.body.train_date,
         train_id: req.body.train_id,
@@ -29,10 +33,14 @@ router.post('/api/take_train', auth(), function (req, res) {
         user_id: req.user.id,
         uuid: randomstring.generate(7)
     };
-    req.app.planedTrains.post(obj, function (err) {
+    req.app.plannedTrains.post(obj, function (err) {
         if (err) return next (err);
         res.json(obj);
     });
+});
+
+router.delete('/api/planned-trains/:uuid', function (req, res) {
+    
 });
 
 module.exports = router;

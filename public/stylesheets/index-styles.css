@@ -62,11 +62,11 @@ header {
     cursor: pointer;
     padding: 5px;
 }
-.planed {
+.planned {
     color: #2f3640;
     display: inline-block
 }
-.planed span {
+.planned span {
     text-decoration: underline;
     margin-left: 5px;
 }

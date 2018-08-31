@@ -2,4 +2,4 @@ node_modules/
 public/trains-2-to-1.json
 public/trains-1-to-2.json
 .env
-planed-trains.json
+planned-trains.json
