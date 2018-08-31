@@ -12,6 +12,7 @@ var debug = require('debug')('who-is-in-my-train:server');
 var http = require('http');
 var getTrains = require('../lib/get-trains')
 var fs = require('fs');
+var { every } = require('async');
 var trainsConfig = require('../public/trains-config.json');
 var schedule = require('node-schedule');
 
@@ -34,17 +35,22 @@ server.on('error', onError);
 server.on('listening', onListening);
 console.log(require('server-welcome')(port, 'Who is in my train'));
 
-// Get trains
-schedule.scheduleJob('0 0 0 * * *', function () {
-  getLine();
-});
-
-
-// Init database for user's trains
+/**
+ * Init database for user's trains.
+ */
 app.plannedTrains = require('json-store-list')(path.resolve(__dirname, '../planned-trains.json'));
 
 /**
- * Get line inforamtions
+ * Launch tasks.
+ */
+removeOldTrains();
+schedule.scheduleJob('0 0 0 * * *', function () {
+  getLine();
+  removeOldTrains();
+});
+
+/**
+ * Get line informations
  */
 function getLine() {
   getTrains(trainsConfig.station1, trainsConfig.station2, new Date(), 5 * 24 * 60 * 60 * 1000, function (err, data) {
@@ -59,6 +65,23 @@ function getLine() {
   });
 }
 
+
+/**
+ * Remove old trains
+ */
+function removeOldTrains () {
+  let toDelete = [];
+  app.plannedTrains.getAll().forEach(element => {
+    let date = new Date(element.train_date);
+    let now = new Date();
+    if ((date.getHours() < now.getHours() && now.getDate() == date.getDate()) || date.getDate() < now.getDate()) {
+      toDelete.push(element.uuid);
+    }
+  });
+  every(toDelete, function (uuid) {
+    app.plannedTrains.delete('uuid', uuid, function(){});
+  });
+}
 
 /**
  * Event listener for HTTP server "error" event.
