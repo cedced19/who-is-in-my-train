@@ -35,8 +35,7 @@ server.on('listening', onListening);
 console.log(require('server-welcome')(port, 'Who is in my train'));
 
 // Get trains
-//getLine();
-schedule.scheduleJob('0 0 */12 * * *', function () {
+schedule.scheduleJob('0 0 0 * * *', function () {
   getLine();
 });
 

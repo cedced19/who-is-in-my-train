@@ -6,8 +6,10 @@ module.exports = ['$http', '$scope', '$window', 'notie', function ($http, $scope
         notie.alert(3, 'Une erreur est survenue.', 3);
     }
 
+    $scope.departureMode = true;
+
     $scope.dates = [];
-    for (var k = 0; k < 5; k++) {
+    for (var k = 0; k < 6; k++) {
         var now = new Date();
         now.setDate(now.getDate() + k);
         $scope.dates.push(now);
@@ -65,21 +67,19 @@ module.exports = ['$http', '$scope', '$window', 'notie', function ($http, $scope
         return Object.keys(obj).length;
     }
     $scope.hoursValid = function (a, b) {
-        return Number(a) > Number(b)
+        return Number(a) >= Number(b)
     }
 
     $scope.verifyHours = function (train, departure) {
+        var date = new Date((departure) ? train.departure : train.arrival);
+        var now = new Date()
+        if ((date.getHours() < now.getHours() && now.getDate() == date.getDate()) || date.getDate() < now.getDate()) {
+            return false;
+        }
         var a = Number($scope.firstHour);
         var b = Number($scope.secondHour);
         if (a < b && a != 0 && b != 0) {
-            var date = 0;
-            if (departure) {
-                date = (new Date(train.departure)).getHours();
-            } else {
-                date = (new Date(train.arrival)).getHours();
-            }
-
-            if (a <= date && date < b) {
+            if (a <= date.getHours() && date.getHours() <= b) {
                 return true;
             } else {
                 return false;
