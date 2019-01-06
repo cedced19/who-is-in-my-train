@@ -1,6 +1,8 @@
 # who-is-in-my-train
 "Who is in my train" is a simple web app that display the departure and the arrival for a specific line and where are your friend.
 
+![](demo.png)
+
 ## Facebook login
 
 To add facebook login go to [developers.facebook.com](https://developers.facebook.com/) and then create an app.

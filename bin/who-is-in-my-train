@@ -44,7 +44,7 @@ app.plannedTrains = require('json-store-list')(path.resolve(__dirname, '../plann
  * Launch tasks.
  */
 removeOldTrains();
-schedule.scheduleJob('0 0 0 * * *', function () {
+schedule.scheduleJob('0 16 * * 3', function () {
   getLine();
   removeOldTrains();
 });
